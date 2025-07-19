@@ -1,5 +1,6 @@
 ﻿using CubosFinance.Application.DTOs;
 using CubosFinance.Application.DTOs.People;
+using CubosFinance.Application.Exceptions;
 using CubosFinance.Application.Interfaces;
 using CubosFinance.Domain.Abstractions.Repositories;
 using CubosFinance.Domain.Entities;
@@ -19,7 +20,7 @@ public class PersonService : IPersonService
     {
         if (await _personRepository.ExistsByDocumentAsync(dto.Document))
         {
-            throw new ApplicationException("Document already in use.");
+            throw new DuplicatedDocumentException(dto.Document);
         }
 
         var person = new Person

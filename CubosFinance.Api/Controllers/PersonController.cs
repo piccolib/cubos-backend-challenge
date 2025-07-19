@@ -1,4 +1,5 @@
 ﻿using CubosFinance.Application.DTOs.People;
+using CubosFinance.Application.Exceptions;
 using CubosFinance.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,7 +25,7 @@ public class PersonController : ControllerBase
 
             return CreatedAtAction(nameof(GetById), new { id = createdPerson.Id }, createdPerson);
         }
-        catch (ApplicationException ex)
+        catch (DuplicatedDocumentException ex)
         {
             return Conflict(new { message = ex.Message });
         }
