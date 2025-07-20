@@ -1,10 +1,8 @@
 ﻿
 using CubosFinance.Domain.Abstractions.Repositories;
-using CubosFinance.Domain.Entities;
 using CubosFinance.Domain.Enums;
 using CubosFinance.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace CubosFinance.Persistence.Repositories;
 
@@ -37,6 +35,16 @@ public class CardRepository : ICardRepository
     {
         return await _context.Cards
             .Where(c => c.AccountId == accountId)
+            .ToListAsync();
+    }
+
+    public async Task<List<Card>> GetByPersonIdAsync(Guid personId, int currentPage, int itemsPerPage)
+    {
+        return await _context.Cards
+            .Where(c => c.Account.PersonId == personId)
+            .OrderByDescending(c => c.CreatedAt)
+            .Skip((currentPage - 1) * itemsPerPage)
+            .Take(itemsPerPage)
             .ToListAsync();
     }
 }

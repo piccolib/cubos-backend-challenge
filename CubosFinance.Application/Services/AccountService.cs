@@ -4,6 +4,7 @@ using CubosFinance.Application.Exceptions;
 using CubosFinance.Domain.Abstractions.Repositories;
 using CubosFinance.Domain.Entities;
 using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
 
 namespace CubosFinance.Application.Services;
@@ -30,11 +31,12 @@ public class AccountService : IAccountService
         if (await _repository.ExistsByNumberAsync(dto.Account))
             throw new DuplicatedAccountNumberException();
 
-        var personId = _httpContextAccessor.HttpContext?.User.FindFirst("id")?.Value;
-        if (personId is null)
+        var personIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier);
+
+        if (personIdClaim == null || !Guid.TryParse(personIdClaim.Value, out var personId))
             throw new UnauthorizedAccessException("User not authenticated.");
 
-        var account = new Account(dto.Branch, dto.Account, Guid.Parse(personId));
+        var account = new Account(dto.Branch, dto.Account, personId);
         await _repository.AddAsync(account);
 
         return new AccountResponseDto

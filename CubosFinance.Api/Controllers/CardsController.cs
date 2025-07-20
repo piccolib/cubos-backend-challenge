@@ -1,55 +1,39 @@
 ﻿using CubosFinance.Application.Abstractions.Services;
-using CubosFinance.Application.Exceptions;
-using CubosFinance.Application.Services;
+using CubosFinance.Application.DTOs.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 [Authorize]
 [ApiController]
-[Route("accounts/{accountId}/cards")]
-public class CardsController : ControllerBase
+[Route("cards")]
+public class AllCardsController : ControllerBase
 {
-    private readonly ICardService _service;
+    private readonly ICardService _cardService;
 
-    public CardsController(ICardService service)
+    public AllCardsController(ICardService cardService)
     {
-        _service = service;
+        _cardService = cardService;
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Create(Guid accountId, [FromBody] CreateCardDto dto)
-    {
-        try
-        {
-            var result = await _service.CreateAsync(accountId, dto);
-            return Ok(result);
-        }
-        catch (InvalidCvvException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
-        catch (PhysicalCardAlreadyExistsException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
-        catch (Exception)
-        {
-            return StatusCode(500, new { message = "An unexpected error occurred." });
-        }
-    }
-
-    [Authorize]
     [HttpGet]
-    public async Task<IActionResult> GetCards(Guid accountId)
+    public async Task<IActionResult> GetAll(
+        [FromQuery] int currentPage = 1,
+        [FromQuery] int itemsPerPage = 10)
     {
-        try
+        var personIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+        if (personIdClaim == null || !Guid.TryParse(personIdClaim.Value, out var personId))
         {
-            var result = await _service.GetAllByAccountAsync(accountId);
-            return Ok(result);
+            return Unauthorized(new { message = "Usuário não autenticado." });
         }
-        catch (Exception)
+
+        var result = await _cardService.GetAllByPersonAsync(personId, currentPage, itemsPerPage);
+
+        return Ok(new
         {
-            return StatusCode(500, new { message = "An unexpected error occurred." });
-        }
+            cards = result.Data,
+            pagination = result.Pagination
+        });
     }
 }

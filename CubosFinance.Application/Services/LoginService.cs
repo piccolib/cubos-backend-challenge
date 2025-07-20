@@ -40,7 +40,7 @@ public class LoginService : ILoginService
         {
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim("id", person.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, person.Id.ToString()),
                 new Claim(ClaimTypes.Name, person.Name),
             }),
             Expires = expires,

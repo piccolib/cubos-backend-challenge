@@ -12,11 +12,13 @@ namespace CubosFinance.Api.Controllers;
 [Authorize]
 public class AccountsController : ControllerBase
 {
-    private readonly IAccountService _service;
+    private readonly IAccountService _accountService;
+    private readonly ICardService _cardService;
 
-    public AccountsController(IAccountService service)
+    public AccountsController(IAccountService service, ICardService cardService)
     {
-        _service = service;
+        _accountService = service;
+        _cardService = cardService;
     }
 
     [HttpPost]
@@ -24,7 +26,7 @@ public class AccountsController : ControllerBase
     {
         try
         {
-            var result = await _service.CreateAsync(dto);
+            var result = await _accountService.CreateAsync(dto);
             return Ok(result);
         }
         catch (InvalidBranchFormatException ex)
@@ -50,13 +52,55 @@ public class AccountsController : ControllerBase
     {
         try
         {
-            var personId = User.FindFirstValue("id");
-            var result = await _service.GetAllByUserAsync(Guid.Parse(personId));
+            var personIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (personIdClaim == null || !Guid.TryParse(personIdClaim.Value, out var personId))
+            {
+                return Unauthorized(new { message = "Usuário não autenticado." });
+            }
+
+            var result = await _accountService.GetAllByUserAsync(personId);
             return Ok(result);
         }
         catch (FormatException)
         {
             return BadRequest(new { message = "Invalid user identifier format." });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new { message = "An unexpected error occurred." });
+        }
+    }
+
+    [HttpPost("{accountId}/cards")]
+    public async Task<IActionResult> Create(Guid accountId, [FromBody] CreateCardDto dto)
+    {
+        try
+        {
+            var result = await _cardService.CreateAsync(accountId, dto);
+            return Ok(result);
+        }
+        catch (InvalidCvvException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (PhysicalCardAlreadyExistsException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new { message = "An unexpected error occurred." });
+        }
+    }
+
+    [HttpGet("{accountId}/cards")]
+    public async Task<IActionResult> GetCards(Guid accountId)
+    {
+        try
+        {
+            var result = await _cardService.GetAllByAccountAsync(accountId);
+            return Ok(result);
         }
         catch (Exception)
         {
