@@ -24,5 +24,12 @@ public class AccountRepository : IAccountRepository
     {
         return await _context.Accounts.AnyAsync(a => a.Number == account);
     }
+
+    public async Task<IEnumerable<Account>> GetByPersonIdAsync(Guid personId)
+    {
+        return await _context.Accounts
+            .Where(a => a.PersonId == personId)
+            .ToListAsync();
+    }
 }
 

@@ -3,6 +3,7 @@ using CubosFinance.Application.DTOs.Account;
 using CubosFinance.Application.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace CubosFinance.Api.Controllers;
 
@@ -37,6 +38,25 @@ public class AccountsController : ControllerBase
         catch (DuplicatedAccountNumberException ex)
         {
             return Conflict(new { message = ex.Message });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new { message = "An unexpected error occurred." });
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Get()
+    {
+        try
+        {
+            var personId = User.FindFirstValue("id");
+            var result = await _service.GetAllByUserAsync(Guid.Parse(personId));
+            return Ok(result);
+        }
+        catch (FormatException)
+        {
+            return BadRequest(new { message = "Invalid user identifier format." });
         }
         catch (Exception)
         {

@@ -46,4 +46,19 @@ public class AccountService : IAccountService
             UpdatedAt = account.UpdatedAt
         };
     }
+
+    public async Task<IEnumerable<AccountResponseDto>> GetAllByUserAsync(Guid personId)
+    {
+        var accounts = await _repository.GetByPersonIdAsync(personId);
+
+        return accounts.Select(account => new AccountResponseDto
+        {
+            Id = account.Id,
+            Branch = account.Branch,
+            Account = account.Number,
+            CreatedAt = account.CreatedAt,
+            UpdatedAt = account.UpdatedAt
+        });
+    }
+
 }

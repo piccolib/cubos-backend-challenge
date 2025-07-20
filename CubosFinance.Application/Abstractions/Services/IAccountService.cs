@@ -10,4 +10,6 @@ namespace CubosFinance.Application.Abstractions.Services;
 public interface IAccountService
 {
     Task<AccountResponseDto> CreateAsync(CreateAccountDto dto);
+
+    Task<IEnumerable<AccountResponseDto>> GetAllByUserAsync(Guid personId);
 }
