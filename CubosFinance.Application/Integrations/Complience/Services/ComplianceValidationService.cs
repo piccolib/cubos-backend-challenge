@@ -1,9 +1,8 @@
 ﻿using CubosFinance.Application.Abstractions.Services;
 using CubosFinance.Application.DTOs;
-using CubosFinance.Application.Integrations.Complience;
 using CubosFinance.Application.Integrations.Complience.Models;
 
-namespace CubosFinance.Application.Services
+namespace CubosFinance.Application.Integrations.Complience.Services
 {
     public class ComplianceValidationService : IComplianceValidationService
     {

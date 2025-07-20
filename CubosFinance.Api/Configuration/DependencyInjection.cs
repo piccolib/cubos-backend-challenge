@@ -1,5 +1,6 @@
 ﻿using CubosFinance.Application.Abstractions.Services;
 using CubosFinance.Application.Integrations.Complience;
+using CubosFinance.Application.Integrations.Complience.Services;
 using CubosFinance.Application.Integrations.Complience.Settings;
 using CubosFinance.Application.Services;
 using CubosFinance.Application.Settings;
@@ -16,11 +17,13 @@ public static class DependencyInjection
         // Repositories
         services.AddScoped<IPersonRepository, PersonRepository>();
         services.AddScoped<IAccountRepository, AccountRepository>();
+        services.AddScoped<ICardRepository, CardRepository>();
 
         // Application Services
         services.AddScoped<IPersonService, PersonService>();
         services.AddScoped<ILoginService, LoginService>();
         services.AddScoped<IAccountService, AccountService>();
+        services.AddScoped<ICardService, CardService>();
         services.AddScoped<IComplianceValidationService, ComplianceValidationService>();
         services.AddScoped<IComplianceAuthService, ComplianceAuthService>();
 

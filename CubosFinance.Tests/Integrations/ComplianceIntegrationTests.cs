@@ -1,7 +1,7 @@
 ﻿using CubosFinance.Application.DTOs;
 using CubosFinance.Application.Integrations.Complience;
+using CubosFinance.Application.Integrations.Complience.Services;
 using CubosFinance.Application.Integrations.Complience.Settings;
-using CubosFinance.Application.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Refit;

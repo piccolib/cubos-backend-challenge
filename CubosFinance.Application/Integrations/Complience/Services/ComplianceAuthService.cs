@@ -5,7 +5,7 @@ using CubosFinance.Application.Integrations.Complience.Settings;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
-namespace CubosFinance.Application.Services
+namespace CubosFinance.Application.Integrations.Complience.Services
 {
     public class ComplianceAuthService : IComplianceAuthService
     {

@@ -42,8 +42,6 @@ public class AccountService : IAccountService
             Id = account.Id,
             Branch = account.Branch,
             Account = account.Number,
-            CreatedAt = account.CreatedAt,
-            UpdatedAt = account.UpdatedAt
         };
     }
 

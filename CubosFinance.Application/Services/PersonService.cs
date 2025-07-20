@@ -39,8 +39,6 @@ public class PersonService : IPersonService
             Name = dto.Name,
             Document = dto.Document,
             PasswordHash = HashPassword(dto.Password),
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
         };
 
         await _personRepository.AddAsync(person);
