@@ -14,7 +14,7 @@ builder.Services.AddDbContext<CubosFinanceDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
 
 // Dependency Injection
-builder.Services.AddProjectServices();
+builder.Services.AddProjectServices(builder.Configuration);
 
 var app = builder.Build();
 

@@ -1,4 +1,6 @@
-﻿using CubosFinance.Application.DTOs.People;
+﻿using CubosFinance.Application.Abstractions.Services;
+using CubosFinance.Application.DTOs;
+using CubosFinance.Application.DTOs.People;
 using CubosFinance.Application.Exceptions;
 using CubosFinance.Application.Services;
 using CubosFinance.Domain.Abstractions.Repositories;
@@ -10,12 +12,14 @@ namespace CubosFinance.Tests.Services;
 public class PersonServiceTests
 {
     private readonly Mock<IPersonRepository> _repositoryMock;
+    private readonly Mock<IComplianceValidationService> _complianceMock;
     private readonly PersonService _service;
 
     public PersonServiceTests()
     {
         _repositoryMock = new Mock<IPersonRepository>();
-        _service = new PersonService(_repositoryMock.Object);
+        _complianceMock = new Mock<IComplianceValidationService>();
+        _service = new PersonService(_repositoryMock.Object, _complianceMock.Object);
     }
 
     [Fact]
@@ -30,6 +34,9 @@ public class PersonServiceTests
 
         _repositoryMock.Setup(r => r.ExistsByDocumentAsync(dto.Document))
             .ReturnsAsync(false);
+
+        _complianceMock.Setup(s => s.ValidateAsync(It.IsAny<DocumentValidationRequestDto>()))
+            .ReturnsAsync(true);
 
         _repositoryMock.Setup(r => r.AddAsync(It.IsAny<Person>()))
             .Returns(Task.CompletedTask);
@@ -59,5 +66,25 @@ public class PersonServiceTests
             .ReturnsAsync(true);
 
         await Assert.ThrowsAsync<DuplicatedDocumentException>(() => _service.CreateAsync(dto));
+    }
+
+    [Fact]
+    public async Task CreateAsync_WhenDocumentIsInvalid()
+    {
+        var dto = new CreatePersonDto
+        {
+            Name = "Bruno",
+            Document = "12345678900",
+            Password = "SenhaSegura123"
+        };
+
+        _repositoryMock
+            .Setup(r => r.ExistsByDocumentAsync(dto.Document))
+            .ReturnsAsync(false);
+
+        _complianceMock.Setup(s => s.ValidateAsync(It.IsAny<DocumentValidationRequestDto>()))
+         .ReturnsAsync(false);
+
+        await Assert.ThrowsAsync<InvalidDocumentException>(() => _service.CreateAsync(dto));
     }
 }

@@ -1,7 +1,7 @@
-﻿using CubosFinance.Application.DTOs;
+﻿using CubosFinance.Application.Abstractions.Services;
+using CubosFinance.Application.DTOs;
 using CubosFinance.Application.DTOs.People;
 using CubosFinance.Application.Exceptions;
-using CubosFinance.Application.Interfaces;
 using CubosFinance.Domain.Abstractions.Repositories;
 using CubosFinance.Domain.Entities;
 
@@ -10,10 +10,12 @@ namespace CubosFinance.Application.Services;
 public class PersonService : IPersonService
 {
     private readonly IPersonRepository _personRepository;
+    private readonly IComplianceValidationService _complianceValidationService;
 
-    public PersonService(IPersonRepository personRepository)
+    public PersonService(IPersonRepository personRepository, IComplianceValidationService complianceValidationService)
     {
         _personRepository = personRepository;
+        _complianceValidationService = complianceValidationService;
     }
 
     public async Task<PersonResponseDto> CreateAsync(CreatePersonDto dto)
@@ -22,6 +24,14 @@ public class PersonService : IPersonService
         {
             throw new DuplicatedDocumentException(dto.Document);
         }
+
+        bool documentoValido = await _complianceValidationService.ValidateAsync(new DocumentValidationRequestDto
+        {
+            Document = dto.Document
+        });
+
+        if (!documentoValido)
+            throw new InvalidDocumentException(dto.Document);
 
         var person = new Person
         {

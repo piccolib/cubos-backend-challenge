@@ -1,6 +1,6 @@
-﻿using CubosFinance.Application.DTOs.People;
+﻿using CubosFinance.Application.Abstractions.Services;
+using CubosFinance.Application.DTOs.People;
 using CubosFinance.Application.Exceptions;
-using CubosFinance.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CubosFinance.Api.Controllers;
