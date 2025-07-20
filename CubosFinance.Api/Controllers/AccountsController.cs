@@ -195,4 +195,30 @@ public class AccountsController : ControllerBase
             return StatusCode(500, new { message = "An unexpected error occurred." });
         }
     }
+
+    [HttpPost("{accountId}/transactions/{transactionId}/revert")]
+    public async Task<IActionResult> RevertTransaction(Guid accountId, Guid transactionId)
+    {
+        try
+        {
+            var result = await _transactionService.RevertAsync(accountId, transactionId);
+            return Ok(result);
+        }
+        catch (AccountNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (InsufficientBalanceException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new { message = "An unexpected error occurred." });
+        }
+    }
 }

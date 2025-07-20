@@ -8,4 +8,6 @@ public interface ITransactionRepository
     Task<Transaction> CreateAsync(Transaction transaction);
     Task<decimal> GetCurrentBalanceAsync(Guid accountId);
     Task<List<Transaction>> GetByAccountIdAsync(Guid accountId, int currentPage, int itemsPerPage, TransactionType? type);
+    Task<Transaction?> GetByIdAsync(Guid transactionId);
+    Task<bool> ExistsReversalFor(Guid originalTransactionId);
 }

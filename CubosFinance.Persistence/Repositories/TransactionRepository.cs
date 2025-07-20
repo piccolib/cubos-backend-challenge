@@ -28,6 +28,7 @@ public class TransactionRepository : ITransactionRepository
             .Where(t => t.AccountId == accountId)
             .SumAsync(t => t.Value);
     }
+
     public async Task<List<Transaction>> GetByAccountIdAsync(Guid accountId, int currentPage, int itemsPerPage, TransactionType? type)
     {
         var query = _context.Transactions
@@ -46,5 +47,16 @@ public class TransactionRepository : ITransactionRepository
             .Skip((currentPage - 1) * itemsPerPage)
             .Take(itemsPerPage)
             .ToListAsync();
+    }
+
+    public async Task<Transaction?> GetByIdAsync(Guid transactionId)
+    {
+        return await _context.Transactions.FindAsync(transactionId);
+    }
+
+    public async Task<bool> ExistsReversalFor(Guid originalTransactionId)
+    {
+        return await _context.Transactions
+            .AnyAsync(t => t.ReversedFromTransactionId == originalTransactionId);
     }
 }

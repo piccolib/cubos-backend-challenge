@@ -1,4 +1,5 @@
 ﻿using CubosFinance.Application.Abstractions.Services;
+using CubosFinance.Application.Common;
 using CubosFinance.Application.DTOs.Common;
 using CubosFinance.Application.DTOs.Transactions;
 using CubosFinance.Application.Exceptions;
@@ -124,6 +125,44 @@ public class TransactionService : ITransactionService
         return new BalanceResponseDto
         {
             Balance = balance
+        };
+    }
+
+    public async Task<TransactionResponseDto> RevertAsync(Guid accountId, Guid transactionId)
+    {
+        var original = await _transactionRepository.GetByIdAsync(transactionId);
+
+        if (original == null || original.AccountId != accountId)
+            throw new AccountNotFoundException("Transaction not found for this account.");
+
+        var alreadyReversed = await _transactionRepository.ExistsReversalFor(transactionId);
+        if (alreadyReversed)
+            throw new InvalidOperationException("This transaction has already been reverted.");
+
+        if (original.Value > 0)
+        {
+            var currentBalance = await _transactionRepository.GetCurrentBalanceAsync(accountId);
+            if (currentBalance < original.Value)
+                throw new InsufficientBalanceException();
+        }
+
+        var reversal = new Transaction
+        {
+            AccountId = accountId,
+            Value = Helper.Invert(original.Value),
+            Description = "Estorno de cobrança indevida.",
+            ReversedFromTransactionId = transactionId
+        };
+
+        await _transactionRepository.CreateAsync(reversal);
+
+        return new TransactionResponseDto
+        {
+            Id = reversal.Id,
+            Value = reversal.Value,
+            Description = reversal.Description,
+            CreatedAt = reversal.CreatedAt,
+            UpdatedAt = reversal.UpdatedAt
         };
     }
 }

@@ -6,4 +6,9 @@ public static class Helper
     {
         return new string(text.Where(char.IsDigit).ToArray());
     }
+
+    public static decimal Invert(this decimal value)
+    {
+        return value * -1;
+    }
 }

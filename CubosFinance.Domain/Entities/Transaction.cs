@@ -8,6 +8,7 @@ public class Transaction
     public string Description { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+    public Guid? ReversedFromTransactionId { get; set; }
     public Account Account { get; set; } = null!;
 
     public static Transaction CreateDebit(Guid accountId, decimal value, string description)
