@@ -9,4 +9,5 @@ public class CubosFinanceDbContext : DbContext
 
     public DbSet<Person> People { get; set; }
 
+    public DbSet<Account> Accounts{ get; set; }
 }

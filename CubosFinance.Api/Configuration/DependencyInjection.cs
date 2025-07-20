@@ -15,10 +15,12 @@ public static class DependencyInjection
     {
         // Repositories
         services.AddScoped<IPersonRepository, PersonRepository>();
+        services.AddScoped<IAccountRepository, AccountRepository>();
 
         // Application Services
         services.AddScoped<IPersonService, PersonService>();
         services.AddScoped<ILoginService, LoginService>();
+        services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<IComplianceValidationService, ComplianceValidationService>();
         services.AddScoped<IComplianceAuthService, ComplianceAuthService>();
 

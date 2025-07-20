@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 
@@ -45,14 +46,16 @@ public class LoginService : ILoginService
             Expires = expires,
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),
-                SecurityAlgorithms.HmacSha256Signature)
+                SecurityAlgorithms.HmacSha256Signature),
+            Issuer = _jwt.Issuer,
+            Audience = _jwt.Audience,
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
 
         return new LoginResponseDto
         {
-            Token = tokenHandler.WriteToken(token),
+            Token = $"Bearer {tokenHandler.WriteToken(token)}"
         };
     }
 }
