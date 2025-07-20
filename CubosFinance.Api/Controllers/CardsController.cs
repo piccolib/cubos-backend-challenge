@@ -7,11 +7,11 @@ using System.Security.Claims;
 [Authorize]
 [ApiController]
 [Route("cards")]
-public class AllCardsController : ControllerBase
+public class CardsController : ControllerBase
 {
     private readonly ICardService _cardService;
 
-    public AllCardsController(ICardService cardService)
+    public CardsController(ICardService cardService)
     {
         _cardService = cardService;
     }

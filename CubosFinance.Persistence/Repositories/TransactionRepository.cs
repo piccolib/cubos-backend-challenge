@@ -1,5 +1,6 @@
 ﻿using CubosFinance.Domain.Abstractions.Repositories;
 using CubosFinance.Domain.Entities;
+using CubosFinance.Domain.Enums;
 using CubosFinance.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,5 +27,24 @@ public class TransactionRepository : ITransactionRepository
         return await _context.Transactions
             .Where(t => t.AccountId == accountId)
             .SumAsync(t => t.Value);
+    }
+    public async Task<List<Transaction>> GetByAccountIdAsync(Guid accountId, int currentPage, int itemsPerPage, TransactionType? type)
+    {
+        var query = _context.Transactions
+            .Where(t => t.AccountId == accountId);
+
+        if (type != null)
+        {
+            if (type == TransactionType.credit)
+                query = query.Where(t => t.Value > 0);
+            else if (type == TransactionType.debit)
+                query = query.Where(t => t.Value < 0);
+        }
+
+        return await query
+            .OrderByDescending(t => t.CreatedAt)
+            .Skip((currentPage - 1) * itemsPerPage)
+            .Take(itemsPerPage)
+            .ToListAsync();
     }
 }

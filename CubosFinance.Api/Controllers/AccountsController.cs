@@ -158,4 +158,23 @@ public class AccountsController : ControllerBase
             return StatusCode(500, new { message = "An unexpected error occurred." });
         }
     }
+
+    [HttpGet("{accountId}/transactions")]
+    public async Task<IActionResult> GetTransactions(Guid accountId, [FromQuery] TransactionResquestDto dto)
+    {
+        try
+        {
+            var result = await _transactionService.GetAllByAccountAsync(accountId, dto);
+
+            return Ok(new
+            {
+                transactions = result.Data,
+                pagination = result.Pagination
+            });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new { message = "An unexpected error occurred." });
+        }
+    }
 }

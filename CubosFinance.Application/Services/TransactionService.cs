@@ -1,4 +1,5 @@
 ﻿using CubosFinance.Application.Abstractions.Services;
+using CubosFinance.Application.DTOs.Common;
 using CubosFinance.Application.DTOs.Transactions;
 using CubosFinance.Application.Exceptions;
 using CubosFinance.Domain.Abstractions.Repositories;
@@ -80,10 +81,35 @@ public class TransactionService : ITransactionService
         return new TransactionResponseDto
         {
             Id = debitTransaction.Id,
-            Value = Math.Abs(debitTransaction.Value),
+            Value = debitTransaction.Value,
             Description = debitTransaction.Description,
             CreatedAt = debitTransaction.CreatedAt,
             UpdatedAt = debitTransaction.UpdatedAt
+        };
+    }
+
+    public async Task<PagedResponseDto<TransactionResponseDto>> GetAllByAccountAsync(Guid accountId, TransactionResquestDto requestDto)
+    {
+        var transactions = await _transactionRepository
+            .GetByAccountIdAsync(accountId, requestDto.CurrentPage, requestDto.ItemsPerPage, requestDto.Type);
+
+        var dtos = transactions.Select(t => new TransactionResponseDto
+        {
+            Id = t.Id,
+            Value = t.Value,
+            Description = t.Description,
+            CreatedAt = t.CreatedAt,
+            UpdatedAt = t.UpdatedAt
+        }).ToList();
+
+        return new PagedResponseDto<TransactionResponseDto>
+        {
+            Data = dtos,
+            Pagination = new PaginationDto
+            {
+                ItemsPerPage = requestDto.ItemsPerPage,
+                CurrentPage = requestDto.CurrentPage,
+            }
         };
     }
 }
