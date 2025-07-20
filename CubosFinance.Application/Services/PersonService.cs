@@ -1,4 +1,5 @@
 ﻿using CubosFinance.Application.Abstractions.Services;
+using CubosFinance.Application.Common;
 using CubosFinance.Application.DTOs;
 using CubosFinance.Application.DTOs.People;
 using CubosFinance.Application.Exceptions;

@@ -1,4 +1,5 @@
 ﻿using CubosFinance.Application.Abstractions.Services;
+using CubosFinance.Application.Common;
 using CubosFinance.Application.DTOs.People;
 using CubosFinance.Application.Exceptions;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,8 @@ public class PersonController : ControllerBase
     {
         try
         {
+            dto.Document = Helper.GetOnlyDigits(dto.Document);
+
             var createdPerson = await _personService.CreateAsync(dto);
 
             return CreatedAtAction(nameof(GetById), new { id = createdPerson.Id }, createdPerson);

@@ -6,4 +6,5 @@ public interface IPersonRepository
 {
     Task AddAsync(Person person);
     Task<bool> ExistsByDocumentAsync(string document);
+    Task<Person?> GetByDocumentAsync(string document);
 }

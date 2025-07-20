@@ -24,5 +24,12 @@ public class PersonRepository : IPersonRepository
     {
         return await _context.People.AnyAsync(p => p.Document == document);
     }
+
+    public async Task<Person?> GetByDocumentAsync(string document)
+    {
+        return await _context.People
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.Document == document);
+    }
 }
 

@@ -2,6 +2,7 @@
 using CubosFinance.Application.Integrations.Complience;
 using CubosFinance.Application.Integrations.Complience.Settings;
 using CubosFinance.Application.Services;
+using CubosFinance.Application.Settings;
 using CubosFinance.Domain.Abstractions.Repositories;
 using CubosFinance.Persistence.Repositories;
 using Refit;
@@ -17,6 +18,7 @@ public static class DependencyInjection
 
         // Application Services
         services.AddScoped<IPersonService, PersonService>();
+        services.AddScoped<ILoginService, LoginService>();
         services.AddScoped<IComplianceValidationService, ComplianceValidationService>();
         services.AddScoped<IComplianceAuthService, ComplianceAuthService>();
 
@@ -24,10 +26,11 @@ public static class DependencyInjection
             .AddRefitClient<IComplianceApi>()
             .ConfigureHttpClient(c =>
             {
-                c.BaseAddress = new Uri(configuration["ComplianceApi:BaseUrl"]!);
+                c.BaseAddress = new Uri(configuration["ComplianceAuth:BaseUrl"]!);
             });
 
         services.Configure<ComplianceAuthSettings>(configuration.GetSection("ComplianceAuth"));
+        services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
 
         return services;
     }
