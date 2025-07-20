@@ -1,4 +1,5 @@
 ﻿using CubosFinance.Application.DTOs;
+using CubosFinance.Application.DTOs.People;
 using CubosFinance.Application.Integrations.Complience;
 using CubosFinance.Application.Integrations.Complience.Services;
 using CubosFinance.Application.Integrations.Complience.Settings;
