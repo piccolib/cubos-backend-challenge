@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
+namespace CubosFinance.Api.Controllers;
+
 [Authorize]
 [ApiController]
 [Route("cards")]
@@ -17,6 +19,8 @@ public class CardsController : ControllerBase
     }
 
     [HttpGet]
+    [ProducesResponseType(typeof(PagedResponseDto<CardResponseDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetAll(
         [FromQuery] int currentPage = 1,
         [FromQuery] int itemsPerPage = 10)
@@ -25,7 +29,7 @@ public class CardsController : ControllerBase
 
         if (personIdClaim == null || !Guid.TryParse(personIdClaim.Value, out var personId))
         {
-            return Unauthorized(new { message = "Usuário não autenticado." });
+            return Unauthorized(new ErrorResponseDto { Message = "Usuário não autenticado." });
         }
 
         var result = await _cardService.GetAllByPersonAsync(personId, currentPage, itemsPerPage);

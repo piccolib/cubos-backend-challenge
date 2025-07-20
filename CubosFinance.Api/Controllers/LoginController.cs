@@ -1,8 +1,9 @@
 ﻿using CubosFinance.Application.Abstractions.Services;
 using CubosFinance.Application.Common;
 using CubosFinance.Application.DTOs.Login;
+using CubosFinance.Application.DTOs.Common;
+using CubosFinance.Application.Exceptions;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Authentication;
 
 namespace CubosFinance.API.Controllers;
 
@@ -18,19 +19,14 @@ public class LoginController : ControllerBase
     }
 
     [HttpPost]
+    [ProducesResponseType(typeof(LoginResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto dto)
     {
-        try
-        {
-            dto.Document = Helper.GetOnlyDigits(dto.Document);
+        dto.Document = Helper.GetOnlyDigits(dto.Document);
 
-            var response = await _loginService.LoginAsync(dto);
+        var response = await _loginService.LoginAsync(dto);
 
-            return Ok(new LoginResponseDto { Token = response.Token });
-        }
-        catch (InvalidCredentialException)
-        {
-            return Unauthorized(new { message = "Invalid credentials" });
-        }
+        return Ok(new LoginResponseDto { Token = response.Token });
     }
 }

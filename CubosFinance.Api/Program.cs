@@ -1,4 +1,5 @@
 using CubosFinance.Api.Configuration;
+using CubosFinance.Api.Filters;
 using CubosFinance.Application.Settings;
 using CubosFinance.Persistence.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,7 +12,10 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .AddControllers()
+    .AddControllers(options =>
+    {
+        options.Filters.Add<ExceptionHandlingFilter>();
+    })
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, allowIntegerValues: false));
@@ -53,7 +57,7 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
-// Middleware pipeline
+// Middleware 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

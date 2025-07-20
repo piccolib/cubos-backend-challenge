@@ -1,7 +1,7 @@
 ﻿using CubosFinance.Application.Abstractions.Services;
 using CubosFinance.Application.Common;
 using CubosFinance.Application.DTOs.People;
-using CubosFinance.Application.Exceptions;
+using CubosFinance.Application.DTOs.Common;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CubosFinance.Api.Controllers;
@@ -18,30 +18,15 @@ public class PersonController : ControllerBase
     }
 
     [HttpPost]
+    [ProducesResponseType(typeof(PersonResponseDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Create([FromBody] CreatePersonDto dto)
     {
-        try
-        {
-            dto.Document = Helper.GetOnlyDigits(dto.Document);
+        dto.Document = Helper.GetOnlyDigits(dto.Document);
 
-            var createdPerson = await _personService.CreateAsync(dto);
+        var result = await _personService.CreateAsync(dto);
 
-            return CreatedAtAction(nameof(GetById), new { id = createdPerson.Id }, createdPerson);
-        }
-        catch (DuplicatedDocumentException ex)
-        {
-            return Conflict(new { message = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
-    [HttpGet("{id}")]
-    [ApiExplorerSettings(IgnoreApi = true)]
-    public IActionResult GetById(Guid id)
-    {
-        return NoContent(); // ou implementar real depois
+        return Ok(result);
     }
 }
