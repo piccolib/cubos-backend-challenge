@@ -9,4 +9,24 @@ public class Transaction
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public Account Account { get; set; } = null!;
+
+    public static Transaction CreateDebit(Guid accountId, decimal value, string description)
+    {
+        return new Transaction
+        {
+            AccountId = accountId,
+            Value = -Math.Abs(value),
+            Description = description,
+        };
+    }
+
+    public static Transaction CreateCredit(Guid accountId, decimal value, string description)
+    {
+        return new Transaction
+        {
+            AccountId = accountId,
+            Value = Math.Abs(value),
+            Description = description,
+        };
+    }
 }

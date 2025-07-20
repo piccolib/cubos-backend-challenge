@@ -7,5 +7,5 @@ public class InsufficientBalanceException : Exception
 
 public class AccountNotFoundException : Exception
 {
-    public AccountNotFoundException() : base("Account not found.") { }
+    public AccountNotFoundException(string message) : base(message) { }
 }

@@ -1,4 +1,4 @@
-﻿namespace CubosFinance.Application.DTOs;
+﻿namespace CubosFinance.Application.DTOs.People;
 
 public class DocumentValidationRequestDto
 {

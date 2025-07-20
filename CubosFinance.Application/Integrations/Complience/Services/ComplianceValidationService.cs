@@ -1,5 +1,5 @@
 ﻿using CubosFinance.Application.Abstractions.Services;
-using CubosFinance.Application.DTOs;
+using CubosFinance.Application.DTOs.People;
 using CubosFinance.Application.Integrations.Complience.Models;
 
 namespace CubosFinance.Application.Integrations.Complience.Services

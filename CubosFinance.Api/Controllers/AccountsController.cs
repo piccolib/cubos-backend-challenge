@@ -123,6 +123,36 @@ public class AccountsController : ControllerBase
         {
             return BadRequest(new { message = ex.Message });
         }
+        catch (AccountNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new { message = "An unexpected error occurred." });
+        }
+    }
+
+    [HttpPost("{accountId}/transactions/internal")]
+    public async Task<IActionResult> CreateInternalTransfer(Guid accountId, [FromBody] CreateInternalTransferDto dto)
+    {
+        try
+        {
+            var result = await _transactionService.CreateInternalAsync(accountId, dto);
+            return Ok(result);
+        }
+        catch (InsufficientBalanceException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (AccountNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
         catch (Exception)
         {
             return StatusCode(500, new { message = "An unexpected error occurred." });

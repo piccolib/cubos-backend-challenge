@@ -1,4 +1,4 @@
-﻿using CubosFinance.Application.DTOs;
+﻿using CubosFinance.Application.DTOs.People;
 
 namespace CubosFinance.Application.Abstractions.Services;
 
