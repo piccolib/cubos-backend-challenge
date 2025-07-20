@@ -177,4 +177,22 @@ public class AccountsController : ControllerBase
             return StatusCode(500, new { message = "An unexpected error occurred." });
         }
     }
+
+    [HttpGet("{accountId}/balance")]
+    public async Task<IActionResult> GetBalance(Guid accountId)
+    {
+        try
+        {
+            var result = await _transactionService.GetBalanceByAccountAsync(accountId);
+            return Ok(result);
+        }
+        catch (AccountNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new { message = "An unexpected error occurred." });
+        }
+    }
 }

@@ -112,5 +112,19 @@ public class TransactionService : ITransactionService
             }
         };
     }
+
+    public async Task<BalanceResponseDto> GetBalanceByAccountAsync(Guid accountId)
+    {
+        var accountExists = await _accountRepository.ExistsAsync(accountId);
+        if (!accountExists)
+            throw new AccountNotFoundException("Account not found.");
+
+        var balance = await _transactionRepository.GetCurrentBalanceAsync(accountId);
+
+        return new BalanceResponseDto
+        {
+            Balance = balance
+        };
+    }
 }
 
