@@ -2,6 +2,7 @@
 using CubosFinance.Domain.Entities;
 using CubosFinance.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Principal;
 
 namespace CubosFinance.Persistence.Repositories;
 
@@ -18,6 +19,11 @@ public class AccountRepository : IAccountRepository
     {
         await _context.Accounts.AddAsync(account);
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<bool> ExistsAsync(Guid accountId)
+    {
+        return await _context.Accounts.AnyAsync(a => a.Id == accountId);
     }
 
     public async Task<bool> ExistsByNumberAsync(string account)

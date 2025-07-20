@@ -8,7 +8,6 @@ namespace CubosFinance.Persistence.Repositories;
 public class PersonRepository : IPersonRepository
 {
     private readonly CubosFinanceDbContext _context;
-
     public PersonRepository(CubosFinanceDbContext context)
     {
         _context = context;

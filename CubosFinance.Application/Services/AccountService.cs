@@ -60,5 +60,4 @@ public class AccountService : IAccountService
             UpdatedAt = account.UpdatedAt
         });
     }
-
 }

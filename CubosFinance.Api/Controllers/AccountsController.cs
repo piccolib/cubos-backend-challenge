@@ -1,5 +1,6 @@
 ﻿using CubosFinance.Application.Abstractions.Services;
 using CubosFinance.Application.DTOs.Account;
+using CubosFinance.Application.DTOs.Transactions;
 using CubosFinance.Application.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +15,13 @@ public class AccountsController : ControllerBase
 {
     private readonly IAccountService _accountService;
     private readonly ICardService _cardService;
+    private readonly ITransactionService _transactionService;
 
-    public AccountsController(IAccountService service, ICardService cardService)
+    public AccountsController(IAccountService service, ICardService cardService, ITransactionService transactionService)
     {
         _accountService = service;
         _cardService = cardService;
+        _transactionService = transactionService;
     }
 
     [HttpPost]
@@ -101,6 +104,24 @@ public class AccountsController : ControllerBase
         {
             var result = await _cardService.GetAllByAccountAsync(accountId);
             return Ok(result);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new { message = "An unexpected error occurred." });
+        }
+    }
+
+    [HttpPost("{accountId}/transactions")]
+    public async Task<IActionResult> CreateTransaction(Guid accountId, [FromBody] CreateTransactionDto dto)
+    {
+        try
+        {
+            var result = await _transactionService.CreateAsync(accountId, dto);
+            return Ok(result);
+        }
+        catch (InsufficientBalanceException ex)
+        {
+            return BadRequest(new { message = ex.Message });
         }
         catch (Exception)
         {

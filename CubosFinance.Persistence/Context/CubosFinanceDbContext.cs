@@ -12,6 +12,7 @@ public class CubosFinanceDbContext : DbContext
     public DbSet<Person> People { get; set; }
     public DbSet<Account> Accounts { get; set; }
     public DbSet<Card> Cards { get; set; }
+    public DbSet<Transaction> Transactions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

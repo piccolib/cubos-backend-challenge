@@ -14,16 +14,16 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddProjectServices(this IServiceCollection services, IConfiguration configuration)
     {
-        // Repositories
         services.AddScoped<IPersonRepository, PersonRepository>();
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<ICardRepository, CardRepository>();
+        services.AddScoped<ITransactionRepository, TransactionRepository>();
 
-        // Application Services
         services.AddScoped<IPersonService, PersonService>();
         services.AddScoped<ILoginService, LoginService>();
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<ICardService, CardService>();
+        services.AddScoped<ITransactionService, TransactionService>();
         services.AddScoped<IComplianceValidationService, ComplianceValidationService>();
         services.AddScoped<IComplianceAuthService, ComplianceAuthService>();
 
