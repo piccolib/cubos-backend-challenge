@@ -32,4 +32,11 @@ public class CardRepository : ICardRepository
     {
         return await _context.Cards.AnyAsync(c => c.AccountId == accountId && c.Type == CardType.Physical);
     }
+
+    public async Task<IEnumerable<Card>> GetAllByAccountIdAsync(Guid accountId)
+    {
+        return await _context.Cards
+            .Where(c => c.AccountId == accountId)
+            .ToListAsync();
+    }
 }

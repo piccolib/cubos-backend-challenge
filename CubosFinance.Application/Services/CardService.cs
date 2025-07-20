@@ -7,12 +7,12 @@ namespace CubosFinance.Application.Services;
 
 public class CardService : ICardService
 {
-    private readonly ICardRepository _repository;
+    private readonly ICardRepository _cardRepository;
     private readonly IAccountRepository _accountRepository;
 
     public CardService(ICardRepository repository, IAccountRepository accountRepository)
     {
-        _repository = repository;
+        _cardRepository = repository;
         _accountRepository = accountRepository;
     }
 
@@ -23,7 +23,7 @@ public class CardService : ICardService
 
         if (dto.Type == CardType.Physical)
         {
-            bool physicalExists = await _repository.PhysicalCardExistsAsync(accountId);
+            bool physicalExists = await _cardRepository.PhysicalCardExistsAsync(accountId);
             if (physicalExists)
                 throw new PhysicalCardAlreadyExistsException();
         }
@@ -36,7 +36,7 @@ public class CardService : ICardService
             Cvv = dto.Cvv,
         };
 
-        await _repository.AddAsync(card);
+        await _cardRepository.AddAsync(card);
 
         return new CardResponseDto
         {
@@ -47,6 +47,21 @@ public class CardService : ICardService
             CreatedAt = card.CreatedAt,
             UpdatedAt = card.UpdatedAt
         };
+    }
+
+    public async Task<IEnumerable<CardResponseDto>> GetAllByAccountAsync(Guid accountId)
+    {
+        var cards = await _cardRepository.GetAllByAccountIdAsync(accountId);
+
+        return cards.Select(card => new CardResponseDto
+        {
+            Id = card.Id,
+            Type = card.Type,
+            Number = card.Number,
+            Cvv = card.Cvv,
+            CreatedAt = card.CreatedAt,
+            UpdatedAt = card.UpdatedAt
+        });
     }
 }
 

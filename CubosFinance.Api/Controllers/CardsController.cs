@@ -1,5 +1,6 @@
 ﻿using CubosFinance.Application.Abstractions.Services;
 using CubosFinance.Application.Exceptions;
+using CubosFinance.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,6 +31,21 @@ public class CardsController : ControllerBase
         catch (PhysicalCardAlreadyExistsException ex)
         {
             return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new { message = "An unexpected error occurred." });
+        }
+    }
+
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> GetCards(Guid accountId)
+    {
+        try
+        {
+            var result = await _service.GetAllByAccountAsync(accountId);
+            return Ok(result);
         }
         catch (Exception)
         {
