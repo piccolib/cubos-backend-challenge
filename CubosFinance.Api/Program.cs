@@ -57,6 +57,13 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
+// Migrations
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<CubosFinanceDbContext>();
+    dbContext.Database.Migrate();
+}
+
 // Middleware 
 if (app.Environment.IsDevelopment())
 {
