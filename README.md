@@ -41,19 +41,12 @@ dotnet test
    - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
    - [PostgreSQL](https://www.postgresql.org/)
 
-2. **Configure o banco de dados**:
+2. *Clone o repositório:
 
-Crie um banco chamado `cubos_db` no seu PostgreSQL local.
+   - git clone https://github.com/seu-usuario/cubos-backend-challenge.git
+   - cd cubos-backend-challenge
 
-3. **Atualize o banco com as migrations**:
-
-```bash
-dotnet ef database update
-```
-
-> Certifique-se de estar com o projeto de API como projeto de inicialização.
-
-4. **Rode a aplicação**:
+3. **Rode a aplicação**:
 
 Você pode usar o Visual Studio (F5) ou executar:
 
@@ -61,11 +54,10 @@ Você pode usar o Visual Studio (F5) ou executar:
 dotnet run --project CubosFinance.Api
 ```
 
----
-
 ## 🔐 Variáveis de ambiente / appsettings
 
 A configuração está no arquivo `appsettings.Development.json`:
+As principais variáveis a serem trocadas aqui são Email e Password do ComplianceAuth, é preciso utilizar credenciais válidas da Cubos para funcionar.
 
 ```json
 "ConnectionStrings": {
@@ -104,13 +96,13 @@ O projeto ainda não possui configuração Docker. Isso poderá ser adicionado p
 
 ## 🇬🇧 English Version
 
-# cubos-backend-challenge
-
 ## 📝 Description
 
-This is a RESTful API built with .NET 8 and PostgreSQL. It allows management of people, bank accounts, cards and transactions — including internal transfers and reversals.
+This is a RESTful API built with .NET 8 and PostgreSQL as the database. It allows the management of people, bank accounts, cards, and transactions — including internal transfers and reversals.
 
-Authentication is based on JWT and there's integration with an external compliance API for CPF/CNPJ validation.
+Authentication is based on JWT, and there is integration with an external compliance API for CPF/CNPJ validation.
+
+See the original challenge statement at [CHALLENGE_INSTRUCTIONS.md](./CHALLENGE_INSTRUCTIONS.md).
 
 ---
 
@@ -119,23 +111,22 @@ Authentication is based on JWT and there's integration with an external complian
 - ASP.NET Core 8
 - Entity Framework Core
 - PostgreSQL
-- Refit (for external API consumption)
+- Refit (for consuming the Compliance API)
 - JWT Authentication
-- Swagger
-- xUnit and Moq for unit tests
-- AutoMapper
+- Swagger (documentation)
+- xUnit and Moq (unit testing)
 
 ---
 
-## 🧪 Running tests
+## 🧪 Running the tests
 
-To run all tests, use the following command in terminal:
+In the terminal, from the test project root, run:
 
 ```bash
 dotnet test
 ```
 
-> Or use **Test Explorer** in Visual Studio.
+> You can also run the tests directly via **Test Explorer** in Visual Studio.
 
 ---
 
@@ -145,17 +136,14 @@ dotnet test
    - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
    - [PostgreSQL](https://www.postgresql.org/)
 
-2. **Create the database**:
-
-Create a database named `cubos_db` in your local PostgreSQL server.
-
-3. **Apply migrations**:
+2. **Clone the repository**:
 
 ```bash
-dotnet ef database update
+git clone https://github.com/your-username/cubos-backend-challenge.git
+cd cubos-backend-challenge
 ```
 
-4. **Run the app**:
+3. **Run the application**:
 
 You can use Visual Studio (F5) or run:
 
@@ -163,11 +151,14 @@ You can use Visual Studio (F5) or run:
 dotnet run --project CubosFinance.Api
 ```
 
+> Migrations are applied automatically at startup.
+
 ---
 
-## 🔐 Environment Variables / Settings
+## 🔐 Environment Variables / appsettings
 
-Set them in `appsettings.Development.json`:
+Configuration is located in the `appsettings.Development.json` file.  
+The main variables to be changed are the `Email` and `Password` under `ComplianceAuth`. You must use valid Cubos credentials.
 
 ```json
 "ConnectionStrings": {
@@ -198,6 +189,6 @@ https://localhost:7065/swagger
 
 ---
 
-## 🐳 Docker (Optional)
+## 🐳 Docker (optional in the future)
 
-Docker support is not implemented yet but may be added later.
+This project currently has no Docker configuration. It may be added later using a Dockerfile and docker-compose.
